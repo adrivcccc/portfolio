@@ -1,101 +1,94 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2822
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+/* Reset basic spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-\f0\fs24 \cf0 /* Reset basic spacing */\
-* \{\
-  margin: 0;\
-  padding: 0;\
-  box-sizing: border-box;\
-\}\
-\
-body \{\
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;\
-  background-color: #f8fafc;\
-  color: #1e293b;\
-  line-height: 1.6;\
-  padding: 2rem 1rem;\
-\}\
-\
-.container \{\
-  max-width: 680px;\
-  margin: 0 auto;\
-\}\
-\
-.header \{\
-  margin-bottom: 3rem;\
-  text-align: left;\
-\}\
-\
-.header h1 \{\
-  font-size: 2.25rem;\
-  font-weight: 700;\
-  color: #0f172a;\
-\}\
-\
-.subtitle \{\
-  font-size: 1.1rem;\
-  color: #64748b;\
-  margin-top: 0.5rem;\
-\}\
-\
-.projects h2 \{\
-  font-size: 1.25rem;\
-  text-transform: uppercase;\
-  letter-spacing: 0.05em;\
-  color: #94a3b8;\
-  margin-bottom: 1.5rem;\
-\}\
-\
-.card \{\
-  background: #ffffff;\
-  border: 1px solid #e2e8f0;\
-  border-radius: 12px;\
-  padding: 1.5rem;\
-  margin-bottom: 1.5rem;\
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);\
-  transition: transform 0.2s ease, box-shadow 0.2s ease;\
-\}\
-\
-.card:hover \{\
-  transform: translateY(-2px);\
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);\
-\}\
-\
-.card h3 \{\
-  font-size: 1.25rem;\
-  color: #0f172a;\
-  margin-bottom: 0.5rem;\
-\}\
-\
-.card p \{\
-  color: #475569;\
-  margin-bottom: 1.25rem;\
-  font-size: 0.95rem;\
-\}\
-\
-.btn \{\
-  display: inline-block;\
-  background-color: #2563eb;\
-  color: #ffffff;\
-  text-decoration: none;\
-  font-weight: 600;\
-  padding: 0.6rem 1.2rem;\
-  border-radius: 8px;\
-  font-size: 0.9rem;\
-  transition: background-color 0.2s ease;\
-\}\
-\
-.btn:hover \{\
-  background-color: #1d4ed8;\
-\}\
-\
-footer \{\
-  margin-top: 4rem;\
-  text-align: center;\
-  color: #94a3b8;\
-  font-size: 0.875rem;\
-\}}
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  line-height: 1.6;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 3rem;
+  text-align: left;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+.projects h2 {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  color: #475569;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #1d4ed8;
+}
+
+footer {
+  margin-top: 4rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
