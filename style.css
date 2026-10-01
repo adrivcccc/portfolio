@@ -200,11 +200,27 @@ p {
   text-align: center;
 }
 
+/* =========================================================
+   UPDATED EMBED & HEART ANNOTATION STYLES
+   ========================================================= */
+
+/* 1. Side-by-Side Wrapper */
+.app-preview-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important; /* Controls the exact space between phone & heart */
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* 2. Phone Frame Container */
 .iframe-container {
   width: 100%;
-  max-width: 393px; /* Mobile width preview size */
-  height: 852px;    /* Typical smartphone screen height */
-  margin: 20px auto;
+  max-width: 393px;
+  height: 852px;
+  margin: 0 !important; /* Clears margin: 20px auto that pushed heart away */
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -217,9 +233,10 @@ p {
   border: none;
 }
 
+/* 3. Poster Container */
 .poster-container {
   width: 100%;
-  height: 500px; /* Adjust height based on your layout preference */
+  height: 500px;
   margin: 20px 0;
   border-radius: 12px;
   overflow: hidden;
@@ -231,4 +248,59 @@ p {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+/* 4. Heart Container & Text */
+.heart-note-container {
+  position: relative;
+  width: 250px;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.heart-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heart-text {
+  position: relative;
+  z-index: 2;
+  width: 70%;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+}
+
+.heart-text p {
+  margin: 0 !important;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+/* 5. Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .app-preview-wrapper {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .iframe-container {
+    max-width: 100% !important;
+    height: 650px !important;
+  }
+
+  .heart-note-container {
+    width: 220px !important;
+    height: 200px !important;
+  }
 }
