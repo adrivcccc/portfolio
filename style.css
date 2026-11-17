@@ -359,17 +359,23 @@ p {
 
 .mems-preview {
   width: 100%;
-  margin: 24px 0 12px;
-  overflow-x: auto;
+  margin: 24px 0;
+  overflow: hidden;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #f2f2f2;
 }
 
 .mems-preview iframe {
   display: block;
   width: 100%;
-  min-width: 1280px;
-  height: 780px;
+  height: 1000px;
+  min-width: 0;
   border: 0;
+}
+
+@media (max-width: 760px) {
+  .mems-preview iframe {
+    height: 1200px;
+  }
 }
