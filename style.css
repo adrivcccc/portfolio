@@ -180,6 +180,15 @@ p {
   margin-bottom: -50px;
 }
 
+.descriptive-icon-heart {
+  width: 3.5em;
+  height: auto;
+  display: inline;
+  position: relative;
+  margin-top: 0px;
+  margin-bottom: -25px;
+}
+
 .descriptive-icon-tomato {
   width: 4em;
   display: inline;
