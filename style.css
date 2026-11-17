@@ -356,20 +356,3 @@ p {
     height: 200px !important;
   }
 }
-
-.mems-preview {
-  width: 100%;
-  margin: 24px 0 12px;
-  overflow-x: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f2f2f2;
-}
-
-.mems-preview iframe {
-  display: block;
-  width: 100%;
-  min-width: 1280px;
-  height: 780px;
-  border: 0;
-}
