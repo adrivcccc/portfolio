@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MEMS Suspension Simulator · Adriana Vasquez</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#203348;background:#f3f6fa;font-size:14px;--blue:#2e70bf;--line:#dce4ed}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer;border:1px solid #ccd8e5;border-radius:6px;background:white;color:#203348;padding:8px 12px}button:hover{background:#eaf1fa}button:focus-visible,input:focus-visible{outline:3px solid #80ade0;outline-offset:2px}button:disabled{opacity:.45;cursor:default}.primary{background:var(--blue);color:white;border-color:var(--blue);font-weight:700}.primary:hover{background:#255c9e}header{padding:22px 26px 18px;border-bottom:1px solid var(--line);background:white;display:flex;justify-content:space-between;align-items:center;gap:18px}h1{font-size:23px;letter-spacing:-.6px;margin:0 0 6px}header p{margin:0;color:#62748a;line-height:1.5}.badge{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:#376b9f;background:#edf4fb;padding:8px 10px;border-radius:5px;white-space:nowrap}.layout{display:grid;grid-template-columns:345px minmax(0,1fr);gap:18px;padding:18px;max-width:1600px;margin:auto}aside{min-width:0}.card{background:white;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:12px}.card-head{padding:12px 14px;border-bottom:1px solid #e8edf3;display:flex;justify-content:space-between;align-items:center;gap:8px}.card-head h2{font-size:13px;margin:0}.subtle{color:#6c7c8f;font-size:12px}.material{display:flex;gap:14px;padding:14px}.material label{flex:1;font-size:12px;color:#53677d}.material input{display:block;width:100%;margin-top:6px;border:1px solid #d4deea;padding:7px;border-radius:5px;color:#203348}.table-scroll{overflow:auto;max-height:206px}table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}th{font-weight:500;color:#66798d;background:#f7f9fc;text-align:right;white-space:nowrap;padding:8px;border-bottom:1px solid #e5ebf2;position:sticky;top:0}td{padding:3px;border-bottom:1px solid #edf1f6;text-align:right}td input{width:100%;min-width:46px;border:1px solid transparent;background:transparent;text-align:right;padding:6px 4px;border-radius:3px;color:#203348}td input:hover{border-color:#ccd8e5}tr.selected{background:#eaf2fc}.row-id{width:40px;padding-right:10px;color:#6c7c8f}.table-tools{padding:7px 10px;display:flex;gap:6px}.table-tools button{font-size:11px;padding:5px 8px}.help{font-size:11px;line-height:1.6;color:#66798d;padding:0 12px 10px;margin:0}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions .primary{flex:1}.status{font-size:12px;line-height:1.5;min-height:38px;margin:10px 2px;color:#536b83}.status.error{color:#b13b2b}.workspace{min-width:0}.plot-card .card-head{padding:15px 18px}.plot-wrap{padding:8px 12px 0}svg{width:100%;height:auto;display:block;touch-action:pan-y}.legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 18px 14px;font-size:11px;color:#61748a}.legend span{display:inline-flex;align-items:center;gap:5px}.swatch{display:inline-block;width:19px;border-top:3px solid #3182c4}.dash{border-top:2px dashed #aaa}.dot{width:6px;height:6px;border:0;border-radius:50%;background:#ef4a40}.square{height:10px;width:10px;border:2px solid #2471bc}.black{background:#222}.results-scroll{overflow:auto;max-height:260px}.results td{padding:9px;white-space:nowrap}.result-note{padding:10px 14px;margin:0;font-size:11px;color:#66798d;line-height:1.6}.export{display:flex;gap:6px;flex-wrap:wrap}.export button{font-size:11px;padding:6px 9px}footer{font-size:11px;color:#6b7e93;padding:0 22px 20px;text-align:center}noscript{display:block;padding:20px;color:#a00}@media(min-width:1000px){aside{max-height:calc(100vh - 145px);overflow:auto;padding-right:4px;min-height:550px}}@media(max-width:760px){header{padding:18px}.badge{display:none}.layout{grid-template-columns:1fr;padding:12px;gap:4px}.workspace{grid-row:1}.plot-wrap{padding:0}.legend{gap:10px}h1{font-size:21px}.card-head{flex-wrap:wrap}}@media print{header,aside,footer,.export,.result-note{display:none!important}.layout{display:block;padding:0}.card{border:0}.results-scroll{max-height:none}.plot-card{break-inside:avoid}body{background:white}.workspace{width:100%}}
+</style>
+</head>
+<body>
+<header><div><h1>MEMS Suspension Simulator</h1><p>Explore how a multi-element suspension responds to loads and displacement constraints.</p></div><span class="badge">Stiffness matrix method</span></header>
+<noscript>Enable JavaScript to use the simulator.</noscript>
+<main class="layout">
+<aside aria-label="Model inputs">
+<section class="card"><div class="card-head"><h2>Material</h2></div><div class="material"><label>Young’s modulus E (GPa)<input id="E" type="number" step="any" value="169"></label><label>Thickness h (μm)<input id="h" type="number" step="any" value="50"></label></div></section>
+<div id="input-tables"></div>
+<div class="actions"><button id="run" class="primary">▶ Run solver</button><button id="example">Load example</button><button id="reset">Reset</button></div>
+<p id="status" class="status" role="status" aria-live="polite">Pre-loaded: CW Group J example. Edit inputs or run the solver.</p>
+</aside>
+<div class="workspace">
+<section class="card plot-card"><div class="card-head"><h2 id="plot-title">Structure preview</h2><span class="subtle">Actual displacement · no magnification</span></div><div class="plot-wrap"><svg id="plot" viewBox="0 0 900 510" role="img" aria-label="MEMS suspension structure in micrometres"></svg></div><div id="legend" class="legend"></div></section>
+<section class="card"><div class="card-head"><h2>Nodal results</h2><div class="export"><button id="txt" disabled>Download TXT</button><button id="svg-export" disabled>Download plot (SVG)</button><button id="pdf" disabled>Print / Save PDF</button></div></div><div class="results-scroll"><table class="results"><thead><tr><th>Node</th><th>ux (nm)</th><th>uy (nm)</th><th>θ (rad)</th><th>Rx (μN)</th><th>Ry (μN)</th><th>Mz (μNm)</th></tr></thead><tbody id="results"><tr><td colspan="7" style="text-align:center;color:#7b8999;padding:24px">Run the solver to see displacements and forces.</td></tr></tbody></table></div><p class="result-note">DOF: 1 = x, 2 = y, 3 = rotation. Force columns show F = KU, as in the MATLAB app. Translational displacements are displayed in nm.</p></section>
+</div>
+</main>
+<footer>Based on Adriana Vasquez’s MATLAB MEMS app · Runs entirely in your browser</footer>
+<script id="solver-core">
+'use strict';
+/* Direct port of mems_app.m. All solver quantities are SI internally.
+   A = w*h; I = h*w^3/12; Kg = T' Ke T.
+   U_free solves Kff U_free = F_free - Kfc U_constrained; F_full = K U.
+   No stiffness regularisation, displacement scaling, or alternative beam theory.
+   MATLAB backslash is replaced by dense Gaussian elimination with scaled partial
+   pivoting (IEEE-754 doubles). Floating-point roundoff need not be identical. */
+const MEMS = (() => {
+ const zeros=(r,c)=>Array.from({length:r},()=>Array(c).fill(0));
+ const mv=(a,x)=>a.map(row=>row.reduce((sum,v,j)=>sum+v*x[j],0));
+ const mm=(a,b)=>a.map(row=>b[0].map((_,j)=>row.reduce((sum,v,k)=>sum+v*b[k][j],0)));
+ const transpose=a=>a[0].map((_,j)=>a.map(row=>row[j]));
+ function elementStiffness(E,A,I,L){
+  const a=A*E/L,b=12*E*I/L**3,c=6*E*I/L**2,d=4*E*I/L,e=2*E*I/L;
+  return [[a,0,0,-a,0,0],[0,b,c,0,-b,c],[0,c,d,0,-c,e],[-a,0,0,a,0,0],[0,-b,-c,0,b,-c],[0,c,e,0,-c,d]];
+ }
+ function transformElement(Ke,nodes,ni,nj){
+  const dx=nodes[nj][0]-nodes[ni][0],dy=nodes[nj][1]-nodes[ni][1];
+  const theta=Math.atan2(dy,dx),c=Math.cos(theta),s=Math.sin(theta);
+  const T=[[c,s,0,0,0,0],[-s,c,0,0,0,0],[0,0,1,0,0,0],[0,0,0,c,s,0],[0,0,0,-s,c,0],[0,0,0,0,0,1]];
+  return mm(mm(transpose(T),Ke),T);
+ }
+ function linearSolve(matrix,rhs){
+  const a=matrix.map((row,i)=>[...row,rhs[i]]),n=a.length;
+  const scale=matrix.map(row=>Math.max(...row.map(Math.abs)));
+  for(let k=0;k<n;k++){
+   let p=k;
+   for(let i=k+1;i<n;i++)if(Math.abs(a[i][k])/(scale[i]||1)>Math.abs(a[p][k])/(scale[p]||1))p=i;
+   if(!Number.isFinite(a[p][k])||scale[p]===0||Math.abs(a[p][k])/scale[p]<Number.EPSILON*n)
+    throw Error('The reduced stiffness matrix is singular or numerically ill-conditioned. Check supports, connectivity, and dimensions.');
+   [a[k],a[p]]=[a[p],a[k]];[scale[k],scale[p]]=[scale[p],scale[k]];
+   for(let i=k+1;i<n;i++){
+    const f=a[i][k]/a[k][k]; a[i][k]=0;
+    for(let j=k+1;j<=n;j++)a[i][j]-=f*a[k][j];
+   }
+  }
+  const x=Array(n).fill(0);
+  for(let i=n-1;i>=0;i--){let v=a[i][n];for(let j=i+1;j<n;j++)v-=a[i][j]*x[j];x[i]=v/a[i][i];}
+  if(x.some(v=>!Number.isFinite(v)))throw Error('The solution is not finite. Check the model.');
+  return x;
+ }
+ function validate(m){
+  if(m.nodes.length<2)throw Error('Need at least 2 nodes.');
+  if(!m.elements.length)throw Error('Need at least 1 element.');
+  if(!m.constraints.length)throw Error('Need at least 3 constraints.');
+  if(!Number.isFinite(m.E)||m.E<=0||!Number.isFinite(m.h)||m.h<=0)throw Error('E and h must be positive finite values.');
+  for(const [key,rows] of Object.entries({nodes:m.nodes,elements:m.elements,constraints:m.constraints,forces:m.forces}))
+   if(rows.some(row=>row.some(v=>!Number.isFinite(v))))throw Error('Enter a finite number in every '+key+' cell.');
+  const validNode=n=>Number.isInteger(n)&&n>=1&&n<=m.nodes.length;
+  m.elements.forEach(([ni,nj,w],i)=>{
+   if(!validNode(ni)||!validNode(nj))throw Error('Element '+(i+1)+': node numbers must reference existing nodes.');
+   if(w<=0)throw Error('Element '+(i+1)+': width must be positive.');
+   if(ni===nj||m.nodes[ni-1].every((v,j)=>v===m.nodes[nj-1][j]))throw Error('Element '+(i+1)+': length must be greater than zero.');
+  });
+  for(const rows of [m.constraints,m.forces])for(const [node,dof] of rows){
+   if(!validNode(node))throw Error('Constraints and loads must reference existing nodes.');
+   if(!Number.isInteger(dof)||dof<1||dof>3)throw Error('DOF must be 1 (x), 2 (y), or 3 (rotation).');
+  }
+ }
+ function solve(m){
+  validate(m);
+  const E=m.E*1e9,h=m.h*1e-6,nodes=m.nodes.map(row=>row.map(v=>v*1e-6));
+  const elements=m.elements.map(([ni,nj])=>[ni-1,nj-1]),w=m.elements.map(row=>row[2]*1e-6);
+  const constraints=m.constraints.map(([node,dof,v])=>[node,dof,dof===3?v:v*1e-6]);
+  // Exactly as the source: multiply EVERY load value by 1e-6, including DOF 3.
+  const forces=m.forces.map(([node,dof,v])=>[node,dof,v*1e-6]);
+  const lengths=elements.map(([ni,nj])=>Math.sqrt((nodes[nj][0]-nodes[ni][0])**2+(nodes[nj][1]-nodes[ni][1])**2));
+  const n=nodes.length*3,K=zeros(n,n),U=Array(n).fill(0),F=Array(n).fill(0);
+  elements.forEach(([ni,nj],i)=>{
+   const A=w[i]*h,I=h*w[i]**3/12,Ke=elementStiffness(E,A,I,lengths[i]);
+   const Kg=transformElement(Ke,nodes,ni,nj),dofs=[3*ni,3*ni+1,3*ni+2,3*nj,3*nj+1,3*nj+2];
+   dofs.forEach((a,r)=>dofs.forEach((b,c)=>{K[a][b]+=Kg[r][c];}));
+  });
+  forces.forEach(([node,dof,v])=>{F[3*(node-1)+dof-1]+=v;});
+  const constrained=constraints.map(([node,dof,v])=>{const g=3*(node-1)+dof-1;U[g]=v;return g;});
+  const free=Array.from({length:n},(_,i)=>i).filter(i=>!constrained.includes(i));
+  if(!free.length)throw Error('All DOFs constrained.');
+  // Preserve source indexing, including repeated constraint rows and last-value U assignment.
+  const rhs=free.map(i=>F[i]-constrained.reduce((sum,j)=>sum+K[i][j]*U[j],0));
+  const reduced=free.map(i=>free.map(j=>K[i][j]));
+  linearSolve(reduced,rhs).forEach((v,i)=>{U[free[i]]=v;});
+  return {E,h,nodes,elements,w,constraints,forces,lengths,K,U,F,Ffull:mv(K,U),free};
+ }
+ function curves(r){
+  // plotResults: 20 points, cubic Hermite transverse + linear axial displacement.
+  return r.elements.map(([ni,nj],i)=>{
+   const dx=r.nodes[nj][0]-r.nodes[ni][0],dy=r.nodes[nj][1]-r.nodes[ni][1],L=r.lengths[i];
+   const th=Math.atan2(dy,dx),c=Math.cos(th),s=Math.sin(th);
+   const R=[[c,s,0],[-s,c,0],[0,0,1]],ui=mv(R,r.U.slice(3*ni,3*ni+3)),uj=mv(R,r.U.slice(3*nj,3*nj+3));
+   const undeformed=[],deformed=[];
+   for(let j=0;j<20;j++){
+    const x=j/19,H1=1-3*x**2+2*x**3,H2=L*(x-2*x**2+x**3),H3=3*x**2-2*x**3,H4=L*(-(x**2)+x**3);
+    const vb=H1*ui[1]+H2*ui[2]+H3*uj[1]+H4*uj[2],ub=ui[0]+x*(uj[0]-ui[0]);
+    const x0=(r.nodes[ni][0]+x*dx)*1e6,y0=(r.nodes[ni][1]+x*dy)*1e6;
+    undeformed.push([x0,y0]);deformed.push([x0+(c*ub-s*vb)*1e6,y0+(s*ub+c*vb)*1e6]);
+   }
+   return {undeformed,deformed};
+  });
+ }
+ const example=()=>({E:169,h:50,nodes:[[0,100],[100,100],[400,100],[500,100],[500,0],[400,0],[100,0],[0,0],[500,-100]],elements:[[1,2,10],[2,3,30],[3,4,10],[4,5,30],[5,6,10],[6,7,30],[7,8,10],[5,9,10]],constraints:[[1,1,0],[1,2,0],[1,3,0],[8,1,0],[8,2,0],[8,3,0],[9,1,1]],forces:[]});
+ return {solve,curves,example,elementStiffness,transformElement};
+})();
+</script>
+<script id="simulator-ui">
+'use strict';
+let model=MEMS.example(),solution=null;
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const sections=[['nodes','Nodes',['Node','x (μm)','y (μm)'],'Coordinates in micrometres.'],['elements','Elements',['El','ni','nj','w (μm)'],'Beam connectivity and in-plane width.'],['constraints','Constraints',['Node','DOF','Value'],'DOF 1, 2: μm · DOF 3: rad.'],['forces','Applied loads',['Node','DOF','Value'],'DOF 1, 2: μN · DOF 3: μN·m.']];
+const selected={};
+function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error);}
+function invalidate(){solution=null;['txt','svg-export','pdf'].forEach(id=>$(id).disabled=true);$('results').innerHTML='<tr><td colspan="7" style="text-align:center;color:#7b8999;padding:24px">Run the solver to see displacements and forces.</td></tr>';status('Inputs updated. Run the solver to calculate results.');draw();}
+function tables(){
+ $('input-tables').replaceChildren();
+ for(const [key,title,headers,help] of sections){
+  const card=document.createElement('section');card.className='card';
+  card.innerHTML='<div class="card-head"><h2>'+title+'</h2></div><div class="table-scroll"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody></tbody></table></div><div class="table-tools"><button type="button">+ '+(key==='nodes'?'node':key==='elements'?'element':key==='constraints'?'constraint':'load')+'</button><button type="button">− Delete row</button></div><p class="help">'+help+'</p>';
+  const body=card.querySelector('tbody'),numbered=key==='nodes'||key==='elements';
+  model[key].forEach((row,i)=>{
+   const tr=document.createElement('tr');
+   if(selected[key]===i)tr.className='selected';
+   if(numbered){const td=document.createElement('td');td.className='row-id';td.textContent=i+1;tr.append(td);}
+   row.forEach((v,j)=>{
+    const td=document.createElement('td'),input=document.createElement('input');input.type='number';input.step='any';input.value=v;
+    input.setAttribute('aria-label',title+' row '+(i+1)+' '+headers[j+(numbered?1:0)]);
+    input.addEventListener('input',()=>{model[key][i][j]=input.value.trim()===''?NaN:Number(input.value);invalidate();});
+    input.addEventListener('focus',()=>{selected[key]=i;body.querySelectorAll('tr').forEach(t=>t.classList.remove('selected'));tr.classList.add('selected');});
+    td.append(input);tr.append(td);
+   });body.append(tr);
+  });
+  const buttons=card.querySelectorAll('button');
+  buttons[0].onclick=()=>{model[key].push(key==='nodes'?[0,0]:key==='elements'?[1,2,10]:key==='constraints'?[1,1,0]:[1,2,0]);tables();invalidate();};
+  buttons[1].onclick=()=>{if(model[key].length){model[key].splice(selected[key]??model[key].length-1,1);delete selected[key];tables();invalidate();}};
+  $('input-tables').append(card);
+ }
+}
+function svgEl(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+// MATLAB jet(256), including its discrete index selection in plotResults.
+function jet(index){const j=index+1;return [Math.min((j-96)/64,(288-j)/64),Math.min((j-32)/64,(224-j)/64),Math.min((j+32)/64,(160-j)/64)].map(v=>Math.round(Math.max(0,Math.min(1,v))*255));}
+function color(index){return 'rgb('+jet(index).join(',')+')';}
+function draw(){
+ const svg=$('plot');svg.replaceChildren();
+ const r=solution,curves=r?MEMS.curves(r):[],pts=model.nodes.filter(row=>row.every(Number.isFinite)).map(row=>row.slice());
+ if(r)curves.forEach(c=>pts.push(...c.deformed));
+ if(!pts.length)pts.push([0,0],[100,100]);
+ let minX=Math.min(...pts.map(p=>p[0])),maxX=Math.max(...pts.map(p=>p[0])),minY=Math.min(...pts.map(p=>p[1])),maxY=Math.max(...pts.map(p=>p[1]));
+ let xr=maxX-minX,yr=maxY-minY;if(!xr)xr=Math.max(yr*.2,10);if(!yr)yr=Math.max(xr*.2,10);
+ const cx=(minX+maxX)/2,cy=(minY+maxY)/2;
+ const left=75,top=32,W=r?680:765,H=400,scale=Math.min(W/(xr*1.22),H/(yr*1.3));
+ const X=x=>left+W/2+(x-cx)*scale,Y=y=>top+H/2-(y-cy)*scale;
+ svg.append(svgEl('rect',{x:0,y:0,width:900,height:510,fill:'white'}));
+ const tick=range=>{const raw=range/6,p=10**Math.floor(Math.log10(raw)),a=raw/p;return (a<1.5?1:a<3.5?2:a<7.5?5:10)*p;};
+ const xlo=cx-W/2/scale,xhi=cx+W/2/scale,ylo=cy-H/2/scale,yhi=cy+H/2/scale;
+ const xt=tick(xhi-xlo),yt=tick(yhi-ylo);
+ for(let x=Math.ceil(xlo/xt)*xt;x<=xhi+xt*1e-8;x+=xt){svg.append(svgEl('line',{x1:X(x),y1:top,x2:X(x),y2:top+H,stroke:'#e8eef5'}));svg.append(svgEl('text',{x:X(x),y:top+H+23,'text-anchor':'middle','font-size':11,fill:'#718298'},Number(x.toPrecision(5)).toString()));}
+ for(let y=Math.ceil(ylo/yt)*yt;y<=yhi+yt*1e-8;y+=yt){svg.append(svgEl('line',{x1:left,y1:Y(y),x2:left+W,y2:Y(y),stroke:'#e8eef5'}));svg.append(svgEl('text',{x:left-12,y:Y(y)+4,'text-anchor':'end','font-size':11,fill:'#718298'},Number(y.toPrecision(5)).toString()));}
+ svg.append(svgEl('rect',{x:left,y:top,width:W,height:H,fill:'none',stroke:'#d6e0ec'}));
+ svg.append(svgEl('text',{x:left+W/2,y:486,'text-anchor':'middle','font-size':12,fill:'#526981'},'x (μm)'));
+ svg.append(svgEl('text',{transform:'translate(18 '+(top+H/2)+') rotate(-90)','text-anchor':'middle','font-size':12,fill:'#526981'},'y (μm)'));
+ const path=(points,stroke,width,dashed=false)=>svg.append(svgEl('polyline',{points:points.map(([x,y])=>X(x)+','+Y(y)).join(' '),fill:'none',stroke,'stroke-width':width,...(dashed?{'stroke-dasharray':'6 5'}:{})}));
+ let mags=[],lo=0,hi=0;
+ if(r){mags=r.nodes.map((_,i)=>Math.sqrt(r.U[3*i]**2+r.U[3*i+1]**2));lo=Math.min(...mags);hi=Math.max(...mags);if(hi-lo<Number.EPSILON)hi=lo+1e-12;
+  curves.forEach((curve,i)=>{const [ni,nj]=r.elements[i],cv=((mags[ni]+mags[nj])/2-lo)/(hi-lo+Number.EPSILON),ci=Math.max(0,Math.round(cv*255));path(curve.undeformed,'#b3b3b3',Math.max(1,1.5*r.w[i]/10e-6),true);path(curve.deformed,color(ci),Math.max(1,3*r.w[i]/10e-6));});
+  const defs=svgEl('defs'),grad=svgEl('linearGradient',{id:'jet-gradient',x1:'0%',y1:'100%',x2:'0%',y2:'0%'});for(let j=0;j<256;j++)grad.append(svgEl('stop',{offset:(j/255*100)+'%','stop-color':color(j)}));defs.append(grad);svg.append(defs);
+  svg.append(svgEl('rect',{x:783,y:90,width:13,height:280,fill:'url(#jet-gradient)'}));
+  svg.append(svgEl('text',{x:804,y:96,'font-size':10,fill:'#62748a'},hi.toExponential(2)));
+  svg.append(svgEl('text',{x:804,y:372,'font-size':10,fill:'#62748a'},lo.toExponential(2)));
+  svg.append(svgEl('text',{transform:'translate(870 230) rotate(-90)','text-anchor':'middle','font-size':11,fill:'#526981'},'Displacement magnitude (m)'));
+ }else{model.elements.forEach(([ni,nj,w])=>{if(model.nodes[ni-1]?.every(Number.isFinite)&&model.nodes[nj-1]?.every(Number.isFinite)&&Number.isFinite(w))path([model.nodes[ni-1],model.nodes[nj-1]],'#4080cc',Math.max(1,w/2));});}
+ model.nodes.forEach((p,i)=>{
+  if(!p.every(Number.isFinite))return;
+  const [x,y]=p,con=model.constraints.some(c=>c[0]===i+1),force=model.forces.some(c=>c[0]===i+1);
+  svg.append(svgEl('circle',{cx:X(x),cy:Y(y),r:r?2.5:3,fill:r?'#222':'#3370bf'}));
+  if(con)svg.append(svgEl('rect',{x:X(x)-7,y:Y(y)-7,width:14,height:14,fill:'none',stroke:r?'#2471bc':'#cc4019','stroke-width':2}));
+  if(!r&&force)svg.append(svgEl('polygon',{points:`${X(x)},${Y(y)-7} ${X(x)-6},${Y(y)+5} ${X(x)+6},${Y(y)+5}`,fill:'none',stroke:'#19a633','stroke-width':2}));
+  const xd=r?x+r.U[3*i]*1e6:x,yd=r?y+r.U[3*i+1]*1e6:y;
+  if(r)svg.append(svgEl('circle',{cx:X(xd),cy:Y(yd),r:2.5,fill:'#ee453d'}));
+  svg.append(svgEl('text',{x:X(xd)+9,y:Y(yd)-9,'font-size':11,'font-weight':700,fill:'#203348'},'N'+(i+1)));
+ });
+ $('plot-title').textContent=r?'Deformed structure':'Structure preview';
+ $('legend').innerHTML=r?'<span><i class="swatch dash"></i>Undeformed</span><span><i class="swatch"></i>Deformed</span><span><i class="swatch square"></i>Constrained node</span><span><i class="swatch dot black"></i>Original node</span><span><i class="swatch dot"></i>Deformed node</span>':'<span><i class="swatch"></i>Elements</span><span><i class="swatch square" style="border-color:#cc4019"></i>Constrained node</span><span>△ Applied load</span>';
+}
+const rounded=(v,places)=>{const f=10**places;return (Math.sign(v)*Math.round(Math.abs(v)*f)/f).toFixed(places);};
+function run(){
+ try{solution=MEMS.solve(model);draw();$('results').replaceChildren();solution.nodes.forEach((_,i)=>{
+  const r=solution,tr=document.createElement('tr'),values=[i+1,rounded(r.U[3*i]*1e9,3),rounded(r.U[3*i+1]*1e9,3),r.U[3*i+2].toExponential(6),rounded(r.Ffull[3*i]*1e6,4),rounded(r.Ffull[3*i+1]*1e6,4),rounded(r.Ffull[3*i+2]*1e6,4)];
+  values.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});$('results').append(tr);
+ });['txt','svg-export','pdf'].forEach(id=>$(id).disabled=false);status('Done — '+model.nodes.length+' nodes, '+model.elements.length+' elements.');
+ }catch(e){invalidate();status('Error: '+e.message,true);}
+}
+function filename(){return 'mems_'+new Date().toISOString().replace(/[-:]/g,'').replace('T','_').slice(0,15)+'_nodes'+model.nodes.length;}
+function download(text,type,name){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function textResults(){
+ const r=solution,fmt=v=>v.toExponential(12),matrix=(name,rows)=>name+' = ['+rows.map(row=>row.map(fmt).join(', ')).join(';\n  ')+'];\n';
+ let t='% MEMS FEM results — browser port of mems_app.m\n% All quantities below are SI. Forces are F = KU.\n\n';
+ t+='E = '+fmt(r.E)+'; % Pa\nh = '+fmt(r.h)+'; % m\nw = ['+r.w.map(fmt).join(', ')+']; % m\n';
+ t+='\n% Node coordinates [x,y] (m)\n'+matrix('nodes',r.nodes);
+ t+='\n% Element connectivity (one-based)\n'+matrix('elements',r.elements.map(row=>row.map(v=>v+1)));
+ t+='\n% Constraints [node,dof,value] (m or rad)\n'+matrix('constraints',r.constraints);
+ t+='\n% Applied loads [node,dof,value] (N or Nm)\n'+matrix('applied_forces',r.forces);
+ t+='\n% Nodal displacements [ux(m),uy(m),theta(rad)]\n'+matrix('U',r.nodes.map((_,i)=>r.U.slice(3*i,3*i+3)));
+ t+='\n% F = KU [Fx(N),Fy(N),Mz(Nm)]\n'+matrix('F_full',r.nodes.map((_,i)=>r.Ffull.slice(3*i,3*i+3)));
+ return t;
+}
+$('txt').onclick=()=>{if(solution)download(textResults(),'text/plain',filename()+'.txt');};
+$('svg-export').onclick=()=>{if(solution){const svg=$('plot').cloneNode(true);svg.setAttribute('xmlns',NS);download(new XMLSerializer().serializeToString(svg),'image/svg+xml',filename()+'.svg');}};
+$('pdf').onclick=()=>{if(solution)window.print();};
+$('run').onclick=run;
+$('example').onclick=()=>{model=MEMS.example();for(const k in selected)delete selected[k];$('E').value=model.E;$('h').value=model.h;tables();invalidate();status('Pre-loaded: CW Group J example. Run the solver to calculate results.');};
+$('reset').onclick=()=>{if(!window.confirm('Clear all inputs and results?'))return;model={E:169,h:50,nodes:[],elements:[],constraints:[],forces:[]};for(const k in selected)delete selected[k];$('E').value=169;$('h').value=50;tables();invalidate();status('Model cleared. Add nodes, elements, constraints, and loads.');};
+for(const id of ['E','h'])$(id).oninput=()=>{model[id]=$(id).value.trim()===''?NaN:Number($(id).value);invalidate();};
+tables();draw();
+</script>
+</body>
+</html>
